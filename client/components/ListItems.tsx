@@ -1,20 +1,32 @@
 import { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-
+import { connect } from "react-redux";
 import { loadData } from "../store/actions";
 import { Table, Alert, Spinner } from "react-bootstrap";
 
-const ListItems = () => {
-  const dispatch = useDispatch();
+type elem = {
+  price: number;
+  value: number;
+  qty: number;
+};
 
-  const { data, loading, error } = useSelector((state: any) => state.data);
+type state = {
+  data: Array<elem>;
+  loading: boolean;
+  err: boolean;
+};
+
+interface props extends state {
+  dataLoadingAction: Function;
+}
+
+const ListItems = ({ err, data, loading, dataLoadingAction }: props) => {
   useEffect(() => {
-    dispatch(loadData());
-  }, [dispatch]);
+    dataLoadingAction();
+  }, []);
 
   return (
     <div className="d-flex justify-contetn-center">
-      {error && <Alert variant="danger">Error loading data</Alert>}
+      {err && <Alert variant="danger">Error loading data</Alert>}
       {loading && (
         <Spinner
           animation="border"
@@ -46,4 +58,19 @@ const ListItems = () => {
   );
 };
 
-export default ListItems;
+const mapStateToProps = (state: { data: state }) => {
+  const { data: fileData } = state;
+  return {
+    data: fileData.data,
+    loading: fileData.loading,
+    err: fileData.err,
+  };
+};
+
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    dataLoadingAction: () => dispatch(loadData()),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ListItems);

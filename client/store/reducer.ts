@@ -8,6 +8,7 @@ import {
   DATA_LAODING,
   DATA_SUCCESS,
   DATA_UPDATE,
+  DATA_RESET,
 } from "./contants";
 
 type inputData = {
@@ -116,10 +117,10 @@ const dataReducer = (
     case DATA_SUCCESS:
       return { data: action.payload, err: false, loading: false };
     case DATA_UPDATE:
-      const newData = state.data;
       //@ts-ignore
-      newData.unshift(action.payload);
-      return { data: newData, err: false, loading: false };
+      return { data: action.payload, err: false, loading: false };
+    case DATA_RESET:
+      return { ...state, data: [] };
     default:
       return state;
   }

@@ -8,3 +8,4 @@ export const DATA_LAODING = "DATA_LAODING";
 export const DATA_FAIL = "DATA_FAIL";
 export const DATA_SUCCESS = "DATA_SUCCESS";
 export const DATA_UPDATE = "DATA_UPDATE";
+export const DATA_RESET = "DATA_RESET";

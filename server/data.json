@@ -1,1 +1,37 @@
-[]
+[
+   {
+      "value": 8,
+      "price": 4,
+      "qty": 2
+   },
+   {
+      "value": 8,
+      "price": 4,
+      "qty": 2
+   },
+   {
+      "value": 1,
+      "price": 1,
+      "qty": 1
+   },
+   {
+      "value": 1,
+      "price": 1,
+      "qty": 1
+   },
+   {
+      "value": 3,
+      "price": 3,
+      "qty": 1
+   },
+   {
+      "value": 99,
+      "price": 9,
+      "qty": 11
+   },
+   {
+      "value": 4,
+      "price": 2,
+      "qty": 2
+   }
+]

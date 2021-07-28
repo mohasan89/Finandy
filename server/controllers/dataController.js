@@ -12,6 +12,8 @@ exports.postData = async (req, res, next) => {
 
         const obj = JSON.parse(fileData);
         obj.unshift(data);
+        const configDirectory = path.resolve(process.cwd(), "config");
+        console.log(configDirectory);
         fs.writeFile(
           path.join(__dirname, "..", "data.json"),
           JSON.stringify(obj, null, 3),
