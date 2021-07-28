@@ -13,11 +13,10 @@ a {
 
 * {
   box-sizing: border-box;
-  background-color: #fdff8c;
-  color: black;
+  background-color: #616161;
+  color: white;
 }
 
 input {
-  background-color: rgb(61, 61, 61) !important;
-  color: white !important;
+  background-color: white !important;
 }
