@@ -49,20 +49,21 @@ const Inputs = ({
       const storage = window.localStorage.getItem("values");
       const storageObj = storage ? JSON.parse(storage) : {};
       const intialState = {
-        qty: Number(storageObj.qty) || 0,
-        value: Number(storageObj.value) || 0,
-        price: Number(storageObj.price) || 0,
-        lastInput: String(storageObj.lastInput || ""),
-        autoInput: String(storageObj.autoInput || ""),
+        values: {
+          qty: Number(storageObj.values.qty) || 0,
+          value: Number(storageObj.values.value) || 0,
+          price: Number(storageObj.values.price) || 0,
+        },
+        lastInput: storageObj.lastInput === "" ? [] : storageObj.lastInput,
       };
-      initInput(intialState);
+      // initInput(intialState);
     } else {
       window.localStorage.setItem(
         "values",
-        JSON.stringify({ qty, value, price, lastInput, autoInput })
+        JSON.stringify({ values: { qty, value, price }, lastInput })
       );
     }
-  }, [qty, value, price, autoInput, lastInput]);
+  }, [qty, value, price, lastInput]);
 
   const changeHandler = (e: ChangeEvent<HTMLInputElement>, element: string) => {
     const newVal = e.target.value === "" ? 0 : Number(e.target.value);
@@ -182,8 +183,10 @@ const Inputs = ({
 const mapStateToProps = (state: { inputs: inputData; data: { data: Array<any> } }) => {
   const { inputs, data } = state;
 
-  const { qty, value, price, lastInput, autoInput } = inputs;
-  return { qty, value, price, lastInput, autoInput, data: data.data };
+  //@ts-ignore
+  const { values, lastInput } = inputs;
+  //@ts-ignore
+  return { qty: values.qty, value: values.value, price: values.price, lastInput, data: data.data };
 };
 
 const mapDispatchToProps = (dispatch: any) => {

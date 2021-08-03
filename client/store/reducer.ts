@@ -17,87 +17,59 @@ type inputData = {
   qty: number;
 };
 
+const newState = (state: any, action: any) => {
+  const newKey =
+    action.type === PRICE_INPUT
+      ? "price"
+      : action.type === VALUE_INPUT
+      ? "value"
+      : action.type === QTY_INPUT
+      ? "qty"
+      : null;
+
+  const newValues = state.values;
+  //@ts-ignore
+  if (newKey) newValues[newKey] = action.payload;
+
+  const newLastValue: Array<any> = state.lastInput;
+  //@ts-ignore
+  if (newLastValue[newLastValue.length - 1] !== newKey) newLastValue.push(newKey);
+  if (newLastValue.length === 2) {
+    if (!newLastValue.includes("qty")) newLastValue.unshift("qty");
+    if (!newLastValue.includes("value")) newLastValue.unshift("value");
+    if (!newLastValue.includes("price")) newLastValue.unshift("price");
+  }
+  console.log(newLastValue[0]);
+  if (newLastValue.length >= 3) {
+    const autoKey = newLastValue[0];
+    console.log(autoKey);
+    //@ts-ignore
+    if (autoKey === "value") {
+      newValues["value"] = newValues["qty"] * newValues["price"];
+      //@ts-ignore
+    } else if (autoKey === "price") {
+      newValues["price"] = newValues["value"] / newValues["qty"];
+    } else {
+      newValues["qty"] = newValues["value"] / newValues["price"];
+    }
+  }
+  if (newLastValue.length >= 4) newLastValue.shift();
+  return { values: newValues, lastInput: newLastValue };
+};
+
 const inputReducer = (
-  state = { price: 0, value: 0, qty: 0, lastInput: "", autoInput: "" },
+  state = { values: { price: 0, value: 0, qty: 0 }, lastInput: [] },
   action: { type: string; payload?: number | Object }
 ) => {
-  const newUpdate =
-    Number(!!(state.price || action.type === PRICE_INPUT)) +
-      Number(!!state.value || action.type === VALUE_INPUT) +
-      Number(!!state.qty || action.type === QTY_INPUT) >=
-    1;
-
   switch (action.type) {
     case PRICE_INPUT:
-      if (newUpdate && typeof action.payload === "number") {
-        const autoInputVal =
-          state.lastInput !== "price"
-            ? state.lastInput === "value"
-              ? "qty"
-              : "value"
-            : state.autoInput;
-
-        const newValue =
-          autoInputVal === "value" ? action.payload * state.qty : state.value / action.payload;
-
-        return {
-          ...state,
-          lastInput: "price",
-          autoInput: autoInputVal,
-          price: action.payload,
-          [autoInputVal]: newValue,
-        };
-      } else {
-        return { ...state, price: action.payload, lastInput: "price" };
-      }
-
-    case QTY_INPUT:
-      if (newUpdate && typeof action.payload === "number") {
-        const autoInputVal =
-          state.lastInput !== "qty"
-            ? state.lastInput === "price"
-              ? "value"
-              : "price"
-            : state.autoInput;
-
-        const newValue =
-          autoInputVal === "value" ? action.payload * state.price : state.value / action.payload;
-        return {
-          ...state,
-          lastInput: "qty",
-          autoInput: autoInputVal,
-          qty: action.payload,
-          [autoInputVal]: newValue,
-        };
-      } else {
-        return { ...state, qty: action.payload, lastInput: "qty" };
-      }
-
+      return newState(state, action);
     case VALUE_INPUT:
-      if (newUpdate && typeof action.payload === "number") {
-        const autoInputVal =
-          state.lastInput !== "value"
-            ? state.lastInput === "price"
-              ? "qty"
-              : "price"
-            : state.autoInput;
-
-        const newValue =
-          autoInputVal === "price" ? action.payload / state.qty : action.payload / state.price;
-
-        return {
-          ...state,
-          lastInput: "value",
-          autoInput: autoInputVal,
-          value: action.payload,
-          [autoInputVal]: newValue,
-        };
-      } else {
-        return { ...state, qty: action.payload, lastInput: "value" };
-      }
-
+      return newState(state, action);
+    case QTY_INPUT:
+      return newState(state, action);
     case INPUT_RESET:
-      return { qty: 0, value: 0, price: 0, lastInput: "", autoInput: "" };
+      return { values: { qty: 0, value: 0, price: 0 }, lastInput: [] };
     case INPUT_INIT:
       return action.payload;
     default:
